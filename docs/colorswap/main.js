@@ -48,11 +48,12 @@ let currColor;
 let direction;
 let spawn;
 let spawnVec;
+let speed;
 
 //========= Game Function ========//
 function update() {
 	if (!ticks) {
-
+		speed = 1;
 		enemies = [];
 		currColor = true;
 		direction = rndi(0,4);
@@ -69,45 +70,45 @@ function update() {
 	if (spawn) {
 
 		// Choose a random color (Blue / Red)
-		if (rndi(0,1)) rndColor = "red";
+		if (rndi(0,2)) rndColor = "red";
 		else rndColor = "blue"
 
 		if (direction == 0) {
-			spawnVec = vec(75, 3);
-			enemies.push({ pos: spawnVec, color: rndColor, dir: vec(1,0) });
-		}
-		if (direction == 1) {
-			spawnVec = vec(75, 147);
-			enemies.push({ pos: spawnVec, color: rndColor, dir: vec(-1,0) });
-		}
-		if (direction == 2) {
-			spawnVec = vec(3, 75);
+			spawnVec = vec(75, -5);
 			enemies.push({ pos: spawnVec, color: rndColor, dir: vec(0,1) });
 		}
-		if (direction == 3) {
-			spawnVec = vec(147, 75);
+		if (direction == 1) {
+			spawnVec = vec(75, 155);
 			enemies.push({ pos: spawnVec, color: rndColor, dir: vec(0,-1) });
+		}
+		if (direction == 2) {
+			spawnVec = vec(-5, 75);
+			enemies.push({ pos: spawnVec, color: rndColor, dir: vec(1,0) });
+		}
+		if (direction == 3) {
+			spawnVec = vec(155, 75);
+			enemies.push({ pos: spawnVec, color: rndColor, dir: vec(-1,0) });
 		}
 
 		console.log(enemies.length + " (" + enemies[0].pos.x + "," + enemies[0].pos.y + ")");
 		// Turn off spawn until need to spawn again
 		spawn = !spawn;
 	}
-	
+
 	// Draw Enemies
 	remove(enemies, (e) => {
-		e.pos.x += e.dir.x;
-		e.pos.y += e.pos.y;
+		e.pos.x += e.dir.x * speed;
+		e.pos.y += e.dir.y * speed;
 		if (e.color == "red")  color("red");
-		if (e.color == "blue") color ("blue")
+		if (e.color == "blue") color ("blue");
 		box(e.pos, 6);
-		return (!(e.pos.x < 74 || e.pos.x > 76 || e.pos.y < 74 || e.pos.y > 76))
+		return (e.pos.x > 73 && e.pos.x < 77 && e.pos.y > 73 && e.pos.y < 77);
 	})
 
 	// Draw Player and Player Color Change
 	if (input.isJustPressed) {
 		currColor = !currColor;
-		spawn != spawn;
+		// spawn != spawn;
 	}
 	if (currColor) {
 		color("red");
