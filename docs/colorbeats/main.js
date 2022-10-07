@@ -1,6 +1,9 @@
-title = "";
+title = "Color Beats";
 
 description = `
+Match colors!
+	
+[TAP] Change colors
 `;
 
 characters = [
