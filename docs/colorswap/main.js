@@ -3,7 +3,140 @@ title = "";
 description = `
 `;
 
-characters = [];
+characters = [
+// red player frames (a, b, c, d)
+`
+      
+ rrrr 
+rrrrrr
+rlrrlr
+rrrrrr
+r    r
+`,
+`
+      
+ lrrl 
+rlrrlr
+rrrrrr
+rrrrrr
+r    r
+`,
+`
+ rrrr 
+rlrrlr
+rrrrrr
+rrrrrr
+rrrrrr
+r    r
+`,
+`
+ rrrr
+rrrrrr
+rlrrlr
+rlrrlr
+rrrrrr
+r    r
+`, 
+// cyan player frames (e, f, g, h)
+`
+      
+ CCCC 
+CCCCCC
+ClCClC
+CCCCCC
+C    C
+`,
+`
+      
+ lCCl 
+ClCClC
+CCCCCC
+CCCCCC
+C    C
+`,
+`
+ CCCC 
+ClCClC
+CCCCCC
+CCCCCC
+CCCCCC
+C    C
+`,
+`
+ CCCC
+CCCCCC
+ClCClC
+ClCClC
+CCCCCC
+C    C
+`, 
+// red enemy (i, j, k, l)
+`
+
+ rrrr 
+ rllr
+ rllr
+ rrrr
+
+`,
+`
+
+  rr 
+ rllr
+ rllr
+  rr
+
+`,
+`
+
+ rrrr
+ rllr
+ rllr
+ rrrr
+
+`,
+`
+ rrrr 
+rrrrrr
+rrllrr
+rrllrr
+rrrrrr
+ rrrr 
+`,
+// cyan enemy (m, n, o, p)
+`
+
+ CCCC 
+ CllC
+ CllC
+ CCCC
+
+`,
+`
+
+  CC 
+ CllC
+ CllC
+  CC
+
+`,
+`
+
+ CCCC
+ CllC
+ CllC
+ CCCC
+
+`,
+`
+ CCCC 
+CCCCCC
+CCllCC
+CCllCC
+CCCCCC
+ CCCC 
+`
+];
 
 const G = {
 	WIDTH: 150,
@@ -110,15 +243,17 @@ function update() {
 		spawn != spawn;
 	}
 	if (currColor) {
-		color("red");
+		color("black");
 		player.color = "red";
+		char(addWithCharCode("a", floor(ticks/10) % 4), player.pos);
 	}
 	if (!currColor) {
-		color("blue");
+		color("black");
 		player.color = "blue";
+		char(addWithCharCode("e", floor(ticks/10) % 4), player.pos);
 	}
-	box(player.pos, 6);
-
+	// box(player.pos, 6);
+	
 	// Game Border (KEEP AT THE END!!!)
 	// color("light_blue");
 	// rect(0, 0, 150, 8);
@@ -126,3 +261,6 @@ function update() {
 	// rect(0, 0, 8, 150);
 	// rect(142, 0, 8, 150);
 }
+
+// drawing enemy/circles
+
