@@ -70,31 +70,7 @@ ClCClC
 CCCCCC
 C    C
 `, 
-// red enemy (i, j, k, l)
-`
-
- rrrr 
- rllr
- rllr
- rrrr
-
-`,
-`
-
-  rr 
- rllr
- rllr
-  rr
-
-`,
-`
-
- rrrr
- rllr
- rllr
- rrrr
-
-`,
+// red enemy (i)
 `
  rrrr 
 rrrrrr
@@ -103,31 +79,7 @@ rrllrr
 rrrrrr
  rrrr 
 `,
-// cyan enemy (m, n, o, p)
-`
-
- CCCC 
- CllC
- CllC
- CCCC
-
-`,
-`
-
-  CC 
- CllC
- CllC
-  CC
-
-`,
-`
-
- CCCC
- CllC
- CllC
- CCCC
-
-`,
+// cyan enemy (j)
 `
  CCCC 
 CCCCCC
@@ -140,12 +92,16 @@ CCCCCC
 
 const G = {
 	WIDTH: 150,
-	HEIGHT: 150
+	HEIGHT: 150,
+	STAR_SPEED_MIN: 0.5,
+	STAR_SPEED_MAX: 1.0
 };
 
 options = {
 	viewSize: vec(G.WIDTH, G.HEIGHT),
-	theme: "pixel"
+	theme: "pixel",
+	seed: 99,
+	isPlayingBgm: true
 };
 
 //======== GAME OBJECTS ========//
@@ -174,6 +130,18 @@ let player;
  */
 let enemies;
 
+/**
+ * @typedef {{ 
+ * pos: Vector,
+ * speed: number 
+ * }} Star
+ * 
+ * @type { Star [] }
+ */
+ let stars;
+
+
+
 
 let gameScore;
 let rndColor;
@@ -199,7 +167,25 @@ function update() {
 			pos: vec(G.WIDTH * 0.5, G.HEIGHT * 0.5),
 			color: "red"
 		};
+
+		// star background
+		stars = times(20, () => {
+			const posX = rnd(0, G.WIDTH);
+			const posY = rnd(0, G.HEIGHT);
+			return {
+				pos: vec(posX, posY),
+				speed: rnd(G.STAR_SPEED_MIN, G.STAR_SPEED_MAX)
+			}
+		});
 	}
+
+	// star background
+	stars.forEach((s) => {
+		s.pos.y += s.speed;
+		s.pos.wrap(0, G.WIDTH, 0, G.HEIGHT);
+		color("light_black");
+		box(s.pos, 1);
+	})
 
 	// Increase Spawnrate by Score
 	if ( 9 > gameScore && gameScore > 5 ) spawnRate = 15;
@@ -243,9 +229,13 @@ function update() {
 		e.pos.x += e.dir.x * speed;
 		e.pos.y += e.dir.y * speed;
 		color("black");
-		if (e.color == "red")  char("l", e.pos);
-		if (e.color == "blue") char("p", e.pos); 
-		if (e.pos.x == 75 && e.pos.y == 75) gameScore++;
+		if (e.color == "red")  char("i", e.pos);
+		if (e.color == "blue") char("j", e.pos);
+		if (e.pos.x == 75 && e.pos.y == 75) {
+			gameScore++;
+			addScore(1);
+			play("select");
+		}
 		return (e.pos.x == 75 && e.pos.y == 75);
 	})
 
@@ -258,13 +248,19 @@ function update() {
 		color("black");
 		player.color = "red";
 		const x = addWithCharCode("a", floor(ticks/10) % 4);
-		if (char(x, 75, 75).isColliding.char.p)	end();
+		if (char(x, 75, 75).isColliding.char.j)	{
+			play("hit");
+			end();
+		}
 	}
 	if (!currColor) {
 		color("black");
 		player.color = "blue";
 		const x = addWithCharCode("e", floor(ticks/10) % 4);
-		if (char(x, 75, 75).isColliding.char.l) end();
+		if (char(x, 75, 75).isColliding.char.i) {
+			play("hit");
+			end();
+		}
 	}
 	// box(player.pos, 6);
 	
