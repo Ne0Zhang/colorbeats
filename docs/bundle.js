@@ -2996,9 +2996,9 @@ image-rendering: pixelated;
   }
   function drawScoreOrTime() {
       if (isShowingScore) {
-          terminal.print(`${Math.floor(exports.score)}`, 0, 0);
+          terminal.print(`${Math.floor(exports.score)}`, 1, 1);
           const hs = `HI ${hiScore}`;
-          terminal.print(hs, terminalSize.x - hs.length, 0);
+          terminal.print(hs, terminalSize.x - hs.length - 1, 1);
       }
       if (isShowingTime) {
           drawTime(exports.time, 0, 0);

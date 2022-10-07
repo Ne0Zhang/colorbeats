@@ -271,6 +271,10 @@ function update() {
 	rect(0, 0, 8, 150);
 	rect(142, 0, 8, 150);
 
+	color("purple");
+	rect(5, 4, 25, 11);
+	rect(107, 4, 39, 11);
+
 	if (ticks/spawnRate % 5 == 0 && ticks != 0) {
 		spawn = !spawn;
 	}
