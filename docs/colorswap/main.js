@@ -175,21 +175,23 @@ let player;
 let enemies;
 
 
-let count;
+let gameScore;
 let rndColor;
 let currColor;
 let direction;
 let spawn;
 let spawnVec;
 let speed;
+let spawnRate;
 
 //========= Game Function ========//
 function update() {
 	if (!ticks) {
+		gameScore = 0;
+		spawnRate = 18;
 		speed = 1;
 		enemies = [];
 		currColor = true;
-		direction = rndi(0,4);
 		spawn = true;
 
 		// Init the character
@@ -199,12 +201,20 @@ function update() {
 		};
 	}
 
+	// Increase Spawnrate by Score
+	if ( 9 > gameScore && gameScore > 5 ) spawnRate = 15;
+	else if ( 13 > gameScore && gameScore >= 9 ) spawnRate = 13;
+	else if ( 17 > gameScore && gameScore >= 13 ) spawnRate = 10;
+	else if ( 30 > gameScore && gameScore >= 17 ) spawnRate = 7;
+	else if ( gameScore >= 30 ) spawnRate = 5;
+
 	// Enemy Spawn
 	if (spawn) {
 
 		// Choose a random color (Blue / Red)
 		if (rndi(0,2)) rndColor = "red";
 		else rndColor = "blue"
+		direction = rndi(0,4);
 
 		if (direction == 0) {
 			spawnVec = vec(75, -5);
@@ -223,7 +233,7 @@ function update() {
 			enemies.push({ pos: spawnVec, color: rndColor, dir: vec(-1,0) });
 		}
 
-		console.log(enemies.length + " (" + enemies[0].pos.x + "," + enemies[0].pos.y + ")");
+		// console.log(enemies.length + " (" + enemies[0].pos.x + "," + enemies[0].pos.y + ")");
 		// Turn off spawn until need to spawn again
 		spawn = !spawn;
 	}
@@ -232,10 +242,11 @@ function update() {
 	remove(enemies, (e) => {
 		e.pos.x += e.dir.x * speed;
 		e.pos.y += e.dir.y * speed;
-		if (e.color == "red")  color("red");
-		if (e.color == "blue") color ("blue");
-		box(e.pos, 6);
-		return (e.pos.x > 73 && e.pos.x < 77 && e.pos.y > 73 && e.pos.y < 77);
+		color("black");
+		if (e.color == "red")  char("l", e.pos);
+		if (e.color == "blue") char("p", e.pos); 
+		if (e.pos.x == 75 && e.pos.y == 75) gameScore++;
+		return (e.pos.x == 75 && e.pos.y == 75);
 	})
 
 	// Draw Player and Player Color Change
@@ -246,21 +257,28 @@ function update() {
 	if (currColor) {
 		color("black");
 		player.color = "red";
-		char(addWithCharCode("a", floor(ticks/10) % 4), player.pos);
+		const x = addWithCharCode("a", floor(ticks/10) % 4);
+		if (char(x, 75, 75).isColliding.char.p)	end();
 	}
 	if (!currColor) {
 		color("black");
 		player.color = "blue";
-		char(addWithCharCode("e", floor(ticks/10) % 4), player.pos);
+		const x = addWithCharCode("e", floor(ticks/10) % 4);
+		if (char(x, 75, 75).isColliding.char.l) end();
 	}
 	// box(player.pos, 6);
 	
 	// Game Border (KEEP AT THE END!!!)
-	// color("light_blue");
-	// rect(0, 0, 150, 8);
-	// rect(0, 142, 150, 8);
-	// rect(0, 0, 8, 150);
-	// rect(142, 0, 8, 150);
+	color("light_blue");
+	rect(0, 0, 150, 8);
+	rect(0, 142, 150, 8);
+	rect(0, 0, 8, 150);
+	rect(142, 0, 8, 150);
+
+	if (ticks/spawnRate % 5 == 0 && ticks != 0) {
+		spawn = !spawn;
+	}
+	// console.log(gameScore +":" + spawnRate);
 }
 
 // drawing enemy/circles
